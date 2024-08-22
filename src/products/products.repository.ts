@@ -3,14 +3,13 @@ import { Product } from "./schemas/products.schemas";
 import { Model } from "mongoose";
 
 export class ProductRepository {
-    @InjectModel(Product.name)
-    private readonly productModel: Model<Product>;
+    constructor(@InjectModel(Product.name) private productModel: Model<Product>) { }
 
     create(product: Product) {
         return this.productModel.create(product);
     }
     findAll() {
-        return this.productModel.find();
+        return this.productModel.find().populate('category');
     }
     findOne(id: string) {
         return this.productModel.findById(id);
