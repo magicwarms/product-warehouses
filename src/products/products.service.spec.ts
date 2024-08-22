@@ -7,15 +7,18 @@ import { ProductRepository } from './products.repository';
 import { ProductCategoriesService } from './../product_categories/product_categories.service';
 import { ProductCategoriesModule } from './../product_categories/product_categories.module';
 import { ProductCategoriesRepository } from './../product_categories/product_categories.repository';
+import { ProductCategory, ProductCategorySchema } from './../product_categories/schemas/product_categories.schemas';
 
 const productMock = [
   {
+    _id: "testid1",
     name: "test",
     description: "test",
     stock: 1,
     category: "test"
   },
   {
+    _id: "testid2",
     name: "test 2",
     description: "test 2",
     stock: 1,
@@ -44,23 +47,17 @@ describe('ProductsService', () => {
         {
           provide: getModelToken(Product.name),
           useValue: mongoose.model(Product.name, ProductSchema)
-        }
-        // {
-        //   provide: getModelToken('Product'),
-        //   useValue: {
-        //     find: jest.fn().mockImplementation(async () => productMock),
-        //     create: jest.fn().mockImplementation(async () => productMock[0]),
-        //     findById: jest.fn().mockImplementation(async () => productMock[0]),
-        //     findByIdAndUpdate: jest.fn().mockImplementation(async () => productMock[0]),
-        //     findByIdAndDelete: jest.fn().mockImplementation(async () => productMock[0]),
-        //   }
-        // }
+        },
+        {
+          provide: getModelToken(ProductCategory.name),
+          useValue: mongoose.model(ProductCategory.name, ProductCategorySchema)
+        },
       ],
     }).compile();
 
     productRepository = module.get<ProductRepository>(ProductRepository);
     productService = module.get<ProductsService>(ProductsService);
-    // productCategoryService = module.get<ProductCategoriesService>(ProductCategoriesService);
+    productCategoryService = module.get<ProductCategoriesService>(ProductCategoriesService);
 
   });
 
@@ -72,15 +69,27 @@ describe('ProductsService', () => {
     // jest.spyOn(productCategoryService, 'findOne').mockReturnValue({
     //   exec: jest.fn().mockResolvedValueOnce(productCatMock),
     // } as any);
-    // expect(productService).toBeDefined();
+    expect(productService).toBeDefined();
+    expect(productCategoryService).toBeDefined();
   });
 
-  // it('should return all products', async () => {
-  //   productRepository.findAll = jest.fn().mockResolvedValue(productMock);
+  it('should return all products', async () => {
+    productRepository.findAll = jest.fn().mockResolvedValue(productMock);
 
-  //   const products = await productService.findAll();
-  //   expect(products).toEqual(productMock);
-  //   expect(products).toBeInstanceOf(Array);
-  //   expect(productRepository.findAll).toHaveBeenCalled();
-  // });
+    const products = await productService.findAll();
+
+    expect(products).toEqual(productMock);
+    expect(products).toBeInstanceOf(Array);
+    expect(productRepository.findAll).toHaveBeenCalled();
+  });
+
+  it('should return one product', async () => {
+    productRepository.findOne = jest.fn().mockResolvedValue(productMock[0]);
+
+    const product = await productService.findOne(productMock[0]._id);
+    expect(product).toEqual(productMock[0]);
+    expect(product).toBeInstanceOf(Object);
+    expect(productRepository.findOne).toHaveBeenCalled();
+    expect(productRepository.findOne).toHaveBeenCalledWith(productMock[0]._id);
+  })
 });

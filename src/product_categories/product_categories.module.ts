@@ -14,7 +14,8 @@ import { ProductCategoriesRepository } from './product_categories.repository';
   controllers: [ProductCategoriesController],
   providers: [
     ProductCategoriesRepository,
-    ProductCategoriesService
+    ProductCategoriesService,
+    ProductCategory
   ],
   exports: [ProductCategoriesService]
 })

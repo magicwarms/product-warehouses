@@ -3,7 +3,7 @@ import { Model } from "mongoose";
 import { ProductCategory } from "./schemas/product_categories.schemas";
 
 export class ProductCategoriesRepository {
-    constructor(@InjectModel(ProductCategory.name) private productCategoryModel: Model<ProductCategory>) { }
+    constructor(@InjectModel(ProductCategory.name) public productCategoryModel: Model<ProductCategory>) { }
 
     async create(product: ProductCategory) {
         const productData = new this.productCategoryModel(product);
