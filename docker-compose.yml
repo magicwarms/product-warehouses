@@ -1,0 +1,17 @@
+services:
+  mqtt-broker:
+    image: eclipse-mosquitto
+    restart: always
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    networks:
+      - mqtttest
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+networks:
+  mqtttest:
+    name: mqtttest
+volumes:
+  data: ~

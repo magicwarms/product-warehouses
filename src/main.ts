@@ -12,6 +12,8 @@ async function bootstrap() {
     defaultVersion: '1',
   });
 
+  app.enableShutdownHooks();
+
   await app.listen(config.get<string>('APP_PORT'));
 }
 
