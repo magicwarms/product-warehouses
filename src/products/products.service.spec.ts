@@ -66,9 +66,6 @@ describe('ProductsService', () => {
   });
 
   it('should be defined', () => {
-    // jest.spyOn(productCategoryService, 'findOne').mockReturnValue({
-    //   exec: jest.fn().mockResolvedValueOnce(productCatMock),
-    // } as any);
     expect(productService).toBeDefined();
     expect(productCategoryService).toBeDefined();
   });

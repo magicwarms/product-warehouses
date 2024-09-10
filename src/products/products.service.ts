@@ -4,13 +4,15 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from './products.repository';
 import { Product } from './schemas/products.schemas';
 import { ProductCategoriesService } from '../product_categories/product_categories.service';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly productRepository: ProductRepository,
-    private readonly productCategoryService: ProductCategoriesService
+    private readonly productCategoryService: ProductCategoriesService,
+    private readonly mailService: EmailService
   ) { }
 
   async create(createProductDto: CreateProductDto) {
@@ -24,7 +26,24 @@ export class ProductsService {
       category: productCategory,
       ...createProductDto
     }
-    return this.productRepository.create(product);
+
+    const productCreated = await this.productRepository.create(product);
+    if (productCreated) {
+      this.mailService.sendEmail({
+        email: 'andhanautama@gmail.com',
+        subject: `New product created ${product.name}`,
+        html: `<p>Hello Andhana,</p>
+        <p>Thank you for store the product! Your product is now active.</p>
+        <p>Description: ${product.description}</p>
+        <p>Enjoy your time with us!</p>`,
+      }).then((data) => {
+        if (data.accepted.length > 0) {
+          console.log('Email successfully sent to ' + data.accepted.join(', '));
+        }
+      }).catch((err) => console.error(err));
+    }
+
+    return productCreated
   }
 
   findAll() {

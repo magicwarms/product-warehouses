@@ -5,13 +5,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './schemas/products.schemas';
 import { ProductRepository } from './products.repository';
 import { ProductCategoriesModule } from '../product_categories/product_categories.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Product.name, schema: ProductSchema }
     ]),
-    ProductCategoriesModule
+    ProductCategoriesModule,
+    EmailModule,
   ],
   controllers: [ProductsController],
   providers: [

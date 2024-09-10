@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProductCategoriesModule } from './product_categories/product_categories.module';
 import { MqttModule } from './mqtt/mqtt.module';
+import { EmailModule } from './email/email.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -16,7 +17,8 @@ import configuration from './config/configuration';
     DatabaseModule.forRootAsync(),
     ProductsModule,
     ProductCategoriesModule,
-    MqttModule
+    MqttModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
