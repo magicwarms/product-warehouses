@@ -6,6 +6,7 @@ import { Product, ProductSchema } from './schemas/products.schemas';
 import { ProductRepository } from './products.repository';
 import { ProductCategoriesModule } from '../product_categories/product_categories.module';
 import { EmailModule } from '../email/email.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { EmailModule } from '../email/email.module';
     ]),
     ProductCategoriesModule,
     EmailModule,
+    MqttModule
   ],
   controllers: [ProductsController],
   providers: [

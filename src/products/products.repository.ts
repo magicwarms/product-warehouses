@@ -9,7 +9,7 @@ export class ProductRepository {
         return this.productModel.create(product);
     }
     findAll() {
-        return this.productModel.find().populate('category');
+        return this.productModel.find().sort({ createdAt: "desc" }).populate('category').lean();
     }
     findOne(id: string) {
         return this.productModel.findById(id);

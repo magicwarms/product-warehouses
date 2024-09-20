@@ -6,13 +6,14 @@ import { Product } from './schemas/products.schemas';
 import { ProductCategoriesService } from '../product_categories/product_categories.service';
 import { Types } from 'mongoose';
 import { EmailService } from '../email/email.service';
+import { MqttService } from 'src/mqtt/mqtt.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly productCategoryService: ProductCategoriesService,
-    private readonly mailService: EmailService
+    private readonly mqttService: MqttService
   ) { }
 
   async create(createProductDto: CreateProductDto) {
@@ -29,18 +30,16 @@ export class ProductsService {
 
     const productCreated = await this.productRepository.create(product);
     if (productCreated) {
-      this.mailService.sendEmail({
-        email: 'andhanautama@gmail.com',
-        subject: `New product created ${product.name}`,
-        html: `<p>Hello Andhana,</p>
-        <p>Thank you for store the product! Your product is now active.</p>
-        <p>Description: ${product.description}</p>
-        <p>Enjoy your time with us!</p>`,
-      }).then((data) => {
-        if (data.accepted.length > 0) {
-          console.log('Email successfully sent to ' + data.accepted.join(', '));
-        }
-      }).catch((err) => console.error(err));
+      const sendProductEmail = await this.mqttService.mqtt.publishAsync(
+        '/send-product-email',
+        JSON.stringify({
+          name: product.name,
+          description: product.description
+        }),
+        { qos: 2, retain: false },
+      );
+
+      console.log({ sendProductEmail });
     }
 
     return productCreated
